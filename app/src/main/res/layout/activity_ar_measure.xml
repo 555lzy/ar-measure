@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- 中央准星:准星模式,配合"落点"按钮 -->
+    <!-- 准星与落点按钮共用屏幕中心，避免“任意点屏幕”和“中心落点”两套操作冲突。 -->
     <View
         android:id="@+id/crosshair"
         android:layout_width="wrap_content"
@@ -23,48 +23,68 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 顶部 HUD:实时距离/状态,大字 -->
     <TextView
         android:id="@+id/txt_hud"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
         android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
         android:background="@color/hud_bg"
         android:gravity="center"
-        android:padding="14dp"
+        android:padding="12dp"
         android:textColor="@color/white"
-        android:textSize="26sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 操作提示(1.5 秒自动隐藏) -->
+    <!-- 命中类型/定位状态；不会把估算点伪装成高置信度命中。 -->
+    <TextView
+        android:id="@+id/txt_quality"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/label_bg"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/txt_hud"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/txt_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="20dp"
         android:background="@color/tip_bg"
         android:gravity="center"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_quality"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 底部:大"落点"为主按钮,右侧三小键 -->
+    <!-- 固定中心准星；一个主按钮落点，其他操作集中在次级控制区。 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,17 +93,18 @@
         <Button
             android:id="@+id/btn_place"
             android:layout_width="0dp"
+            android:layout_height="96dp"
             android:layout_weight="2"
-            android:layout_height="72dp"
+            android:enabled="false"
+            android:text="@string/btn_place"
             android:textSize="22sp"
-            android:textStyle="bold"
-            android:text="@string/btn_place" />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_weight="3"
             android:orientation="vertical">
 
             <LinearLayout
@@ -94,39 +115,49 @@
                 <Button
                     android:id="@+id/btn_undo"
                     android:layout_width="0dp"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:layout_height="48dp"
-                    android:textSize="14sp"
-                    android:text="@string/btn_undo" />
+                    android:minWidth="0dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:text="@string/btn_undo"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/btn_unit"
                     android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="1"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="8dp"
-                    android:textSize="14sp"
-                    android:text="@string/btn_unit" />
+                    android:minWidth="0dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:text="@string/btn_unit"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/btn_clear"
                     android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="1"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="8dp"
-                    android:textSize="14sp"
-                    android:text="@string/btn_clear" />
+                    android:minWidth="0dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:text="@string/btn_clear"
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/txt_mode"
+            <Button
+                android:id="@+id/btn_mode"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="6dp"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:text="@string/mode_hint" />
+                android:layout_height="44dp"
+                android:layout_marginTop="8dp"
+                android:minWidth="0dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="@string/mode_precision_button"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

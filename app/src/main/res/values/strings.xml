@@ -3,24 +3,50 @@
     <string name="app_name">AR 测距</string>
     <string name="start_measure">开始测距</string>
     <string name="msg_need_camera">需要相机权限才能开始 AR 测距</string>
-    <string name="msg_ready">对准要测的位置,点两点即出距离——不用等,点哪测哪</string>
-    <string name="msg_no_arcore">此设备不支持 ARCore / 面向 AR 的 Google Play 服务</string>
+    <string name="msg_ready">约 2 米测量：先缓慢扫描目标表面，再对准端点按“落点”。</string>
+    <string name="msg_no_arcore">ARCore 不可用：请检查设备支持情况及“面向 AR 的 Google Play 服务”</string>
+    <string name="msg_checking_arcore">正在检查 ARCore，请稍候…</string>
     <string name="msg_declined_install">取消了 ARCore (Google Play 服务) 的安装,无法进行 AR 测距</string>
     <string name="msg_ar_unavailable">AR 不可用:%1$s</string>
-    <string name="hud_start">对准要测的位置,点第 1 个点</string>
-    <string name="hud_one_point">再点 1 个点出距离(白框对准哪,尺子就实时跟着)</string>
-    <string name="hud_locating">正在定位…慢速移动手机即可,无需等待</string>
-    <string name="hud_result_line">直线距离:%1$s</string>
-    <string name="hud_result_poly">折线总长:%1$s | 首尾直线:%2$s</string>
-    <string name="tip_locating">还没定位稳,慢速移动手机再点</string>
-    <string name="tip_no_surface">这里点不上!对准近处的地面/墙面</string>
+
+    <string name="hud_start">缓慢扫描目标表面，将准星对准第一个端点</string>
+    <string name="hud_one_point">第 1 点已放置 · 对准另一端点，再按“落点”</string>
+    <string name="hud_locating">正在定位…请缓慢移动手机并保持目标清晰</string>
+    <string name="hud_result_line">直线距离：%1$s</string>
+    <string name="hud_result_poly">折线总长：%1$s | 首尾直线：%2$s</string>
+
+    <string name="quality_locating">定位中 · 缓慢移动手机，保持目标清晰</string>
+    <string name="quality_no_hit">未识别到可靠落点 · 缓慢扫过有纹理的目标表面</string>
+    <string name="quality_no_hit_depth">未命中表面 · 缓慢扫过目标（本机已启用 ARCore 深度）</string>
+    <string name="quality_plane">已识别表面</string>
+    <string name="quality_depth">ARCore 深度点（仍受距离/光线影响）</string>
+    <string name="quality_feature">视觉特征点（纹理越清晰越稳）</string>
+    <string name="quality_instant_full">即时放置已稳定跟踪</string>
+    <string name="quality_stabilizing">命中：%1$s · 保持准星稳定约 0.3 秒</string>
+    <string name="quality_ready">已稳定：%1$s · 可按“落点”</string>
+    <string name="quality_approx_blocked">仅有估算落点 · 精度优先模式暂不允许提交，请继续扫描或切换快速估算</string>
+    <string name="quality_approx_stabilizing">即时估算点 · 稳住准星后可提交，结果会带 ≈</string>
+    <string name="quality_approx_allowed">即时估算点已稳定 · 可提交，但结果会标记 ≈</string>
+
+    <string name="tip_locating">定位尚未稳定：缓慢移动手机，扫过有纹理的表面</string>
+    <string name="tip_no_surface">没有可靠落点：缓慢扫描目标；也可切换快速估算，但误差可能较大</string>
+    <string name="tip_stabilizing">请让准星停在端点约 0.3 秒，按钮启用后再落点</string>
     <string name="tip_place_failed">落点失败,再点一次试试</string>
+    <string name="tip_estimate_blocked">这是即时估算点，不能作为精度优先模式的正式落点</string>
+    <string name="tip_estimate_added">已添加估算点：结果会标记 ≈，请用卷尺核对</string>
+    <string name="tip_mode_precision">已切换到精度优先：即时估算点不能直接提交</string>
+    <string name="tip_mode_quick">已切换到快速估算：即时放置估值会标记 ≈</string>
+    <string name="tip_material_loading">AR 正在准备，请稍等片刻再落点</string>
+
     <string name="btn_undo">撤销</string>
     <string name="btn_clear">清空</string>
     <string name="btn_unit">单位</string>
     <string name="btn_place">落点</string>
-    <string name="mode_hint">白框对准 → 按「落点」,或直接点屏幕</string>
+    <string name="mode_precision_button">精度优先 · 切换估算</string>
+    <string name="mode_quick_button">快速估算 · 切回精度</string>
+    <string name="mode_hint">准星对准端点 → 按“落点”；估算值会标记 ≈</string>
     <string name="pick_unit">选择单位</string>
+
     <string-array name="units">
         <item>厘米 (cm)</item>
         <item>米 (m)</item>
