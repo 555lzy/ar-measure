@@ -7,9 +7,13 @@
     <string name="msg_no_arcore">此设备不支持 ARCore / 面向 AR 的 Google Play 服务</string>
     <string name="msg_declined_install">取消了 ARCore (Google Play 服务) 的安装,无法进行 AR 测距</string>
     <string name="msg_ar_unavailable">AR 不可用:%1$s</string>
-    <string name="hud_hint">已落点:%1$d 个(点击平面继续,≥2 个后显示距离)</string>
+    <string name="hud_hint">已落点:%1$d 个(等白色网格出现,再点 1 个点出距离)</string>
+    <string name="hud_locating">正在定位…像拍照一样慢速移动手机,对准要测的地面/桌面</string>
     <string name="hud_result_line">直线距离:%1$s</string>
     <string name="hud_result_poly">折线总长:%1$s | 首尾直线:%2$s</string>
+    <string name="tip_locating">先看到白色网格再点</string>
+    <string name="tip_no_surface">这里点不上!换个位置/慢点移动手机</string>
+    <string name="btn_undo">撤销</string>
     <string name="btn_clear">清空</string>
     <string name="btn_unit">单位</string>
     <string name="pick_unit">选择单位</string>
