@@ -107,8 +107,6 @@
             android:textStyle="bold"
             app:backgroundTint="@color/accent"
             app:cornerRadius="17dp"
-            app:insetBottom="0dp"
-            app:insetTop="0dp"
             app:rippleColor="@color/accent_pressed" />
 
         <LinearLayout
@@ -131,8 +129,6 @@
                 android:textSize="12sp"
                 app:backgroundTint="@color/button_secondary"
                 app:cornerRadius="14dp"
-                app:insetBottom="0dp"
-                app:insetTop="0dp"
                 app:strokeColor="@color/button_stroke"
                 app:strokeWidth="1dp" />
 
@@ -151,8 +147,6 @@
                 android:textSize="12sp"
                 app:backgroundTint="@color/button_secondary"
                 app:cornerRadius="14dp"
-                app:insetBottom="0dp"
-                app:insetTop="0dp"
                 app:strokeColor="@color/button_stroke"
                 app:strokeWidth="1dp" />
 
@@ -171,8 +165,6 @@
                 android:textSize="12sp"
                 app:backgroundTint="@color/button_secondary"
                 app:cornerRadius="14dp"
-                app:insetBottom="0dp"
-                app:insetTop="0dp"
                 app:strokeColor="@color/button_stroke"
                 app:strokeWidth="1dp" />
 
@@ -191,8 +183,6 @@
                 android:textSize="12sp"
                 app:backgroundTint="@color/button_secondary"
                 app:cornerRadius="14dp"
-                app:insetBottom="0dp"
-                app:insetTop="0dp"
                 app:strokeColor="@color/button_stroke"
                 app:strokeWidth="1dp" />
         </LinearLayout>

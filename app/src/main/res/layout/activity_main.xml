@@ -192,8 +192,6 @@
         android:textStyle="bold"
         app:backgroundTint="@color/accent"
         app:cornerRadius="18dp"
-        app:insetBottom="0dp"
-        app:insetTop="0dp"
         app:rippleColor="@color/accent_pressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
