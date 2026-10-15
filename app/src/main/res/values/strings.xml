@@ -16,6 +16,8 @@
     <string name="btn_undo">撤销</string>
     <string name="btn_clear">清空</string>
     <string name="btn_unit">单位</string>
+    <string name="btn_place">落点</string>
+    <string name="mode_hint">对准 → 按「落点」,或直接点屏幕任意处</string>
     <string name="pick_unit">选择单位</string>
     <string-array name="units">
         <item>厘米 (cm)</item>

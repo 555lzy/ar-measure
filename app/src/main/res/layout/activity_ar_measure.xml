@@ -12,6 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- 中央准星:准星模式,配合"落点"按钮 -->
+    <View
+        android:id="@+id/crosshair"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_crosshair"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- 顶部 HUD:实时距离/状态,大字 -->
     <TextView
         android:id="@+id/txt_hud"
@@ -47,42 +58,75 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 底部三个大按钮:撤销 / 单位 / 清空 -->
+    <!-- 底部:大"落点"为主按钮,右侧三小键 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <Button
-            android:id="@+id/btn_undo"
+            android:id="@+id/btn_place"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="56dp"
-            android:textSize="16sp"
-            android:text="@string/btn_undo" />
+            android:layout_weight="2"
+            android:layout_height="72dp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:text="@string/btn_place" />
 
-        <Button
-            android:id="@+id/btn_unit"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="56dp"
-            android:layout_marginLeft="12dp"
-            android:textSize="16sp"
-            android:text="@string/btn_unit" />
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_clear"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="56dp"
-            android:layout_marginLeft="12dp"
-            android:textSize="16sp"
-            android:text="@string/btn_clear" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_undo"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="48dp"
+                    android:textSize="14sp"
+                    android:text="@string/btn_undo" />
+
+                <Button
+                    android:id="@+id/btn_unit"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="14sp"
+                    android:text="@string/btn_unit" />
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="14sp"
+                    android:text="@string/btn_clear" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:text="@string/mode_hint" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 中央准星:外圈 + 十字短刻度 + 中心点 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="center">
+        <shape android:shape="oval">
+            <stroke android:width="2dp" android:color="#CCFFC107" />
+            <size android:width="56dp" android:height="56dp" />
+        </shape>
+    </item>
+    <item android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="#CCFFC107" />
+            <size android:width="6dp" android:height="6dp" />
+        </shape>
+    </item>
+</layer-list>
