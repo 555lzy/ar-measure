@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 中央准星:外圈 + 十字短刻度 + 中心点 -->
+<!-- 中央准星:白色方框 + 中心点,对齐原版"白色方框"指示 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:gravity="center">
-        <shape android:shape="oval">
-            <stroke android:width="2dp" android:color="#CCFFC107" />
-            <size android:width="56dp" android:height="56dp" />
+        <shape android:shape="rectangle">
+            <stroke android:width="2dp" android:color="#E6FFFFFF" />
+            <size android:width="44dp" android:height="44dp" />
+            <corners android:radius="4dp" />
         </shape>
     </item>
     <item android:gravity="center">
         <shape android:shape="oval">
-            <solid android:color="#CCFFC107" />
-            <size android:width="6dp" android:height="6dp" />
+            <solid android:color="#E6FFFFFF" />
+            <size android:width="5dp" android:height="5dp" />
         </shape>
     </item>
 </layer-list>
