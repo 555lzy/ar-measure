@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- 准星与落点按钮共用屏幕中心，避免“任意点屏幕”和“中心落点”两套操作冲突。 -->
     <View
         android:id="@+id/crosshair"
         android:layout_width="wrap_content"
@@ -23,141 +22,179 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Compact floating readout: the camera remains the main part of the screen. -->
     <TextView
         android:id="@+id/txt_hud"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="12dp"
-        android:background="@color/hud_bg"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/bg_hud_card"
         android:gravity="center"
-        android:padding="12dp"
-        android:textColor="@color/white"
-        android:textSize="22sp"
+        android:maxLines="2"
+        android:paddingLeft="16dp"
+        android:paddingTop="12dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/text_primary"
+        android:textSize="19sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 命中类型/定位状态；不会把估算点伪装成高置信度命中。 -->
     <TextView
         android:id="@+id/txt_quality"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/label_bg"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="26dp"
+        android:background="@drawable/bg_status_chip"
         android:gravity="center"
-        android:padding="8dp"
-        android:textColor="@color/white"
-        android:textSize="14sp"
+        android:maxLines="2"
+        android:paddingLeft="12dp"
+        android:paddingTop="8dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp"
         app:layout_constraintTop_toBottomOf="@id/txt_hud"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/txt_tip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="20dp"
-        android:background="@color/tip_bg"
-        android:gravity="center"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/txt_quality"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- 固定中心准星；一个主按钮落点，其他操作集中在次级控制区。 -->
+    <!-- Tips appear inside the bottom tray so they do not cover the target or reticle. -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/bottom_panel"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_measure_panel"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <TextView
+            android:id="@+id/txt_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_tip_card"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingTop="8dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_place"
-            android:layout_width="0dp"
-            android:layout_height="96dp"
-            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
             android:enabled="false"
-            android:text="@string/btn_place"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:text="@string/btn_place_first"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/accent"
+            app:cornerRadius="17dp"
+            app:insetBottom="0dp"
+            app:insetTop="0dp"
+            app:rippleColor="@color/accent_pressed" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_weight="3"
-            android:orientation="vertical">
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_undo"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1"
-                    android:minWidth="0dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:text="@string/btn_undo"
-                    android:textSize="12sp" />
-
-                <Button
-                    android:id="@+id/btn_unit"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_weight="1"
-                    android:minWidth="0dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:text="@string/btn_unit"
-                    android:textSize="12sp" />
-
-                <Button
-                    android:id="@+id/btn_clear"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_weight="1"
-                    android:minWidth="0dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:text="@string/btn_clear"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_mode"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_marginTop="8dp"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_undo"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
                 android:minWidth="0dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:text="@string/mode_precision_button"
-                android:textSize="12sp" />
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="@string/btn_undo"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:backgroundTint="@color/button_secondary"
+                app:cornerRadius="14dp"
+                app:insetBottom="0dp"
+                app:insetTop="0dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_unit"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="6dp"
+                android:layout_weight="1"
+                android:minWidth="0dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="@string/btn_unit"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:backgroundTint="@color/button_secondary"
+                app:cornerRadius="14dp"
+                app:insetBottom="0dp"
+                app:insetTop="0dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_mode"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="6dp"
+                android:layout_weight="1"
+                android:minWidth="0dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="@string/mode_precision_short"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:backgroundTint="@color/button_secondary"
+                app:cornerRadius="14dp"
+                app:insetBottom="0dp"
+                app:insetTop="0dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_clear"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="6dp"
+                android:layout_weight="1"
+                android:minWidth="0dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text="@string/btn_clear"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:backgroundTint="@color/button_secondary"
+                app:cornerRadius="14dp"
+                app:insetBottom="0dp"
+                app:insetTop="0dp"
+                app:strokeColor="@color/button_stroke"
+                app:strokeWidth="1dp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

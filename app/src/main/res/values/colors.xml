@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#000000</color>
-    <color name="white">#FFFFFF</color>
-    <color name="hud_bg">#77000000</color>
-    <color name="tip_bg">#CC333333</color>
-    <color name="label_bg">#B3000000</color>
+    <color name="black">#080D11</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="text_primary">#F4F8FA</color>
+    <color name="text_secondary">#C0CDD2</color>
+    <color name="accent">#58E0C3</color>
+    <color name="accent_pressed">#38BCA2</color>
+    <color name="button_text">#09201C</color>
+    <color name="button_secondary">#C21B2730</color>
+    <color name="button_stroke">#3CFFFFFF</color>
+    <color name="panel_bg">#E810171D</color>
+    <color name="panel_stroke">#38FFFFFF</color>
+    <color name="hud_bg">#E510171D</color>
+    <color name="status_bg">#C9141D24</color>
+    <color name="tip_bg">#EF203039</color>
+    <color name="label_bg">#D9091015</color>
 </resources>

@@ -3,13 +3,13 @@ package com.qh.armeasure;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.DepthPoint;
 import com.google.ar.core.Frame;
@@ -54,9 +54,11 @@ public class ArMeasureActivity extends AppCompatActivity {
     private static final float LINE_THICKNESS = 0.008f;
     private static final long HIT_TEST_INTERVAL_MS = 60L;
     private static final long HUD_INTERVAL_MS = 150L;
+    private static final long RESULT_SETTLE_DELAY_MS = 650L;
+    private static final float RESULT_CHANGE_EPSILON_METERS = 0.003f;
     private static final int STABILITY_REQUIRED_SAMPLES = 6;
     private static final long STABILITY_MIN_DURATION_MS = 300L;
-    private static final float STABILITY_RADIUS_METERS = 0.025f;
+    private static final float STABILITY_RADIUS_METERS = 0.015f;
     private static final float INSTANT_FALLBACK_DISTANCE_METERS = 2.0f;
     private static final float LABEL_WIDTH_METERS = 0.16f;
     private static final float LABEL_HEIGHT_METERS = 0.04f;
@@ -65,8 +67,12 @@ public class ArMeasureActivity extends AppCompatActivity {
     private TextView hudText;
     private TextView qualityText;
     private TextView tipText;
-    private Button placeButton;
-    private Button modeButton;
+    private MaterialButton placeButton;
+    private MaterialButton undoButton;
+    private MaterialButton unitButton;
+    private MaterialButton modeButton;
+    private MaterialButton clearButton;
+    private int lastPlaceButtonLabel = -1;
 
     private Unit unit = Unit.CENTIMETER;
     private MeasureMode measureMode = MeasureMode.PRECISION;
@@ -118,6 +124,9 @@ public class ArMeasureActivity extends AppCompatActivity {
 
     private long lastHitTestAt;
     private long lastHudUpdateAt;
+    private long resultChangedAt;
+    private float previousResultTotal = Float.NaN;
+    private float previousResultStraight = Float.NaN;
 
     private final Runnable hideTipRunnable = () -> {
         if (tipText != null) {
@@ -135,9 +144,9 @@ public class ArMeasureActivity extends AppCompatActivity {
         tipText = findViewById(R.id.txt_tip);
         placeButton = findViewById(R.id.btn_place);
         modeButton = findViewById(R.id.btn_mode);
-        Button undoButton = findViewById(R.id.btn_undo);
-        Button clearButton = findViewById(R.id.btn_clear);
-        Button unitButton = findViewById(R.id.btn_unit);
+        undoButton = findViewById(R.id.btn_undo);
+        clearButton = findViewById(R.id.btn_clear);
+        unitButton = findViewById(R.id.btn_unit);
 
         placeButton.setOnClickListener(v -> placeAtScreenCenter());
         modeButton.setOnClickListener(v -> toggleMeasurementMode());
@@ -145,6 +154,7 @@ public class ArMeasureActivity extends AppCompatActivity {
         clearButton.setOnClickListener(v -> clearAll());
         unitButton.setOnClickListener(v -> showUnitDialog());
         updateModeButton();
+        updateUnitButton();
         updatePlaceButton();
 
         FragmentManager fm = getSupportFragmentManager();
@@ -159,12 +169,12 @@ public class ArMeasureActivity extends AppCompatActivity {
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onSceneUpdate);
 
         // Prepare renderables ahead of time so the first committed point does not stall on creation.
-        MaterialFactory.makeOpaqueWithColor(this, rgb(0xFF, 0x3B, 0x30))
+        MaterialFactory.makeOpaqueWithColor(this, rgb(0xFF, 0x8A, 0x65))
                 .thenAccept(material -> runOnUiThread(() -> {
                     pointMaterial = material;
                     updatePlaceButton();
                 }));
-        MaterialFactory.makeOpaqueWithColor(this, rgb(0xFF, 0xC1, 0x07))
+        MaterialFactory.makeOpaqueWithColor(this, rgb(0x58, 0xE0, 0xC3))
                 .thenAccept(material -> runOnUiThread(() -> {
                     lineMaterial = material;
                     updatePlaceButton();
@@ -177,10 +187,19 @@ public class ArMeasureActivity extends AppCompatActivity {
         if (arFragment == null) return;
         Frame frame = arFragment.getArSceneView().getArFrame();
         long now = SystemClock.uptimeMillis();
-        refreshTarget(frame, now, true);
-
-        if (!cameraTracking) {
+        boolean frameTracking = frame != null
+                && frame.getCamera().getTrackingState() == TrackingState.TRACKING;
+        if (!frameTracking) {
+            refreshTarget(frame, now, false);
             showTip(getString(R.string.tip_locating));
+            return;
+        }
+
+        cameraTracking = true;
+        // Commit the exact hit currently shown by the reticle preview. A fresh hit-test here used
+        // to replace the visible preview with a different pose at the instant of the tap.
+        if (now - lastHitTestAt > HIT_TEST_INTERVAL_MS * 3L) {
+            showTip(getString(R.string.tip_target_refresh));
             return;
         }
         if (currentTarget == null) {
@@ -306,7 +325,7 @@ public class ArMeasureActivity extends AppCompatActivity {
         float[] translation = candidate.hit.getHitPose().getTranslation();
         Vector3 position = new Vector3(translation[0], translation[1], translation[2]);
         if (stableOrigin == null
-                || isApproximate(stableQuality) != isApproximate(candidate.quality)
+                || stableQuality != candidate.quality
                 || distance(stableOrigin, position) > STABILITY_RADIUS_METERS) {
             stableOrigin = position;
             stableQuality = candidate.quality;
@@ -422,6 +441,10 @@ public class ArMeasureActivity extends AppCompatActivity {
                 addSegment(points.get(points.size() - 1), point);
             }
             points.add(point);
+            resetResultStability();
+            resetTargetStability();
+            currentTarget = null;
+            lastHitTestAt = 0L;
             updateHudNow();
 
             if (candidate.quality == HitQuality.INSTANT_APPROXIMATE) {
@@ -627,16 +650,19 @@ public class ArMeasureActivity extends AppCompatActivity {
         if (hudText == null || arFragment == null) return;
         Frame frame = arFragment.getArSceneView().getArFrame();
         if (frame == null || frame.getCamera().getTrackingState() != TrackingState.TRACKING) {
+            resetResultStability();
             hudText.setText(R.string.hud_locating);
             return;
         }
 
         int count = points.size();
         if (count == 0) {
+            resetResultStability();
             hudText.setText(R.string.hud_start);
             return;
         }
         if (count == 1) {
+            resetResultStability();
             hudText.setText(R.string.hud_one_point);
             return;
         }
@@ -651,18 +677,46 @@ public class ArMeasureActivity extends AppCompatActivity {
                     || isApproximate(segment.end.quality);
         }
 
+        float straight = count == 2 ? total : distance(
+                points.get(0).marker.getWorldPosition(),
+                points.get(count - 1).marker.getWorldPosition());
+        boolean settled = updateResultStability(total, straight);
         if (count == 2) {
-            hudText.setText(getString(R.string.hud_result_line,
+            int resultText = settled
+                    ? R.string.hud_result_line
+                    : R.string.hud_result_line_settling;
+            hudText.setText(getString(resultText,
                     formatMeasuredDistance(total, totalApproximate)));
         } else {
-            float straight = distance(points.get(0).marker.getWorldPosition(),
-                    points.get(count - 1).marker.getWorldPosition());
             boolean straightApproximate = isApproximate(points.get(0).quality)
                     || isApproximate(points.get(count - 1).quality);
-            hudText.setText(getString(R.string.hud_result_poly,
+            int resultText = settled
+                    ? R.string.hud_result_poly
+                    : R.string.hud_result_poly_settling;
+            hudText.setText(getString(resultText,
                     formatMeasuredDistance(total, totalApproximate),
                     formatMeasuredDistance(straight, straightApproximate)));
         }
+    }
+
+    /** Show a settling state until anchor updates have been quiet for a short interval. */
+    private boolean updateResultStability(float total, float straight) {
+        long now = SystemClock.uptimeMillis();
+        if (Float.isNaN(previousResultTotal)
+                || Math.abs(total - previousResultTotal) > RESULT_CHANGE_EPSILON_METERS
+                || Math.abs(straight - previousResultStraight) > RESULT_CHANGE_EPSILON_METERS) {
+            previousResultTotal = total;
+            previousResultStraight = straight;
+            resultChangedAt = now;
+            return false;
+        }
+        return now - resultChangedAt >= RESULT_SETTLE_DELAY_MS;
+    }
+
+    private void resetResultStability() {
+        previousResultTotal = Float.NaN;
+        previousResultStraight = Float.NaN;
+        resultChangedAt = 0L;
     }
 
     private void toggleMeasurementMode() {
@@ -680,19 +734,59 @@ public class ArMeasureActivity extends AppCompatActivity {
 
     private void updateModeButton() {
         if (modeButton == null) return;
-        modeButton.setText(measureMode == MeasureMode.PRECISION
-                ? R.string.mode_precision_button
-                : R.string.mode_quick_button);
+        boolean precision = measureMode == MeasureMode.PRECISION;
+        modeButton.setText(precision
+                ? R.string.mode_precision_short
+                : R.string.mode_quick_short);
+        modeButton.setContentDescription(getString(precision
+                ? R.string.mode_precision_desc
+                : R.string.mode_quick_desc));
+    }
+
+    private void updateUnitButton() {
+        if (unitButton == null) return;
+        String[] names = getResources().getStringArray(R.array.units);
+        String shortName;
+        switch (unit) {
+            case METER: shortName = "m"; break;
+            case FOOT: shortName = "ft"; break;
+            case INCH: shortName = "in"; break;
+            default: shortName = "cm"; break;
+        }
+        unitButton.setText(shortName);
+        unitButton.setContentDescription(getString(R.string.current_unit,
+                names[unit.ordinal()]));
     }
 
     private void updatePlaceButton() {
         if (placeButton == null) return;
+
+        int pointCount = points.size();
+        int label = pointCount == 0
+                ? R.string.btn_place_first
+                : pointCount == 1
+                ? R.string.btn_place_second
+                : R.string.btn_place_next;
+        if (lastPlaceButtonLabel != label) {
+            placeButton.setText(label);
+            lastPlaceButtonLabel = label;
+        }
+
+        long targetAge = SystemClock.uptimeMillis() - lastHitTestAt;
+        boolean targetFresh = lastHitTestAt > 0L && targetAge <= HIT_TEST_INTERVAL_MS * 3L;
         boolean materialsReady = pointMaterial != null
                 && (points.isEmpty() || lineMaterial != null);
-        boolean enabled = cameraTracking && targetStable
+        boolean enabled = cameraTracking && targetFresh && targetStable
                 && isPlaceable(currentTarget) && materialsReady;
         if (placeButton.isEnabled() != enabled) {
             placeButton.setEnabled(enabled);
+        }
+        boolean hasPoints = !points.isEmpty();
+        if (undoButton != null && undoButton.isEnabled() != hasPoints) {
+            undoButton.setEnabled(hasPoints);
+        }
+        if (clearButton != null && clearButton.isEnabled() != hasPoints) {
+            clearButton.setEnabled(hasPoints);
         }
     }
 
@@ -716,6 +810,7 @@ public class ArMeasureActivity extends AppCompatActivity {
             if (segment.lineNode != null) segment.lineNode.setParent(null);
             if (segment.labelNode != null) segment.labelNode.setParent(null);
         }
+        resetResultStability();
         updateHudNow();
         updatePlaceButton();
     }
@@ -751,6 +846,7 @@ public class ArMeasureActivity extends AppCompatActivity {
                 .setTitle(R.string.pick_unit)
                 .setItems(names, (dialog, which) -> {
                     unit = Unit.values()[which];
+                    updateUnitButton();
                     updateHudNow();
                 })
                 .show();
