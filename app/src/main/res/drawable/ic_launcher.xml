@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简易启动图标:黄色"尺子"内嵌两条刻度线 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M20,44 L88,44 A6,6 0 0 1 94,50 L94,64 A6,6 0 0 1 88,70 L20,70 A6,6 0 0 1 14,64 L14,50 A6,6 0 0 1 20,44 Z" />
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M28,44 L31,44 L31,56 L28,56 Z M54,44 L57,44 L57,60 L54,60 Z M80,44 L83,44 L83,56 L80,56 Z" />
+</vector>

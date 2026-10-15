@@ -1,0 +1,11 @@
+# Android/android build junk
+*.gradle
+!build.gradle
+!settings.gradle
+.gradle/
+local.properties
+.idea/
+*.iml
+captures/
+*.apk
+build/

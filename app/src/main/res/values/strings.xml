@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AR 测距</string>
+    <string name="start_measure">开始测距</string>
+    <string name="msg_need_camera">需要相机权限才能开始 AR 测距</string>
+    <string name="msg_ready">对准地面或桌面,然后点击屏幕上的两点即可测量距离</string>
+    <string name="msg_no_arcore">此设备不支持 ARCore / 面向 AR 的 Google Play 服务</string>
+    <string name="msg_declined_install">取消了 ARCore (Google Play 服务) 的安装,无法进行 AR 测距</string>
+    <string name="msg_ar_unavailable">AR 不可用:%1$s</string>
+    <string name="hud_hint">已落点:%1$d 个(点击平面继续,≥2 个后显示距离)</string>
+    <string name="hud_result_line">直线距离:%1$s</string>
+    <string name="hud_result_poly">折线总长:%1$s | 首尾直线:%2$s</string>
+    <string name="btn_clear">清空</string>
+    <string name="btn_unit">单位</string>
+    <string name="pick_unit">选择单位</string>
+    <string-array name="units">
+        <item>厘米 (cm)</item>
+        <item>米 (m)</item>
+        <item>英尺 (ft)</item>
+        <item>英寸 (in)</item>
+    </string-array>
+</resources>

@@ -1,0 +1,5 @@
+// ARMeasure - 仿 com.qh.measure(扫描测量全能王) 测距功能的 ARCore 实现
+// 插件 Manager 提示:顶层只需声明插件版本
+plugins {
+    id 'com.android.application' version '8.2.2' apply false
+}

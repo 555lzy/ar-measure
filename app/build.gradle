@@ -1,0 +1,42 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.qh.armeasure'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.qh.armeasure"
+        minSdk 24          // ARCore 要求
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix '.debug'
+        }
+    }
+}
+
+dependencies {
+    // ARCore:原版 APK 内 libarcore_sdk_c.so / libarcore_sdk_jni.so 对应的官方 Java 入口
+    implementation 'com.google.ar:core:1.44.0'
+    // Sceneform UX:锚点/手势/平面发现的原生封装(sceneform-ux 1.17.1,Google Maven 仍在)
+    implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.17.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    // 布局使用 ConstraintLayout
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.11.0'
+}
