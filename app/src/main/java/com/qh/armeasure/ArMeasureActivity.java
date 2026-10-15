@@ -81,7 +81,7 @@ public class ArMeasureActivity extends AppCompatActivity {
             return;
         }
         com.google.ar.core.Trackable trackable = hitResult.getTrackable();
-        if (trackable == null || !trackable.isTracking()) {
+        if (trackable == null || trackable.getTrackingState() != com.google.ar.core.TrackingState.TRACKING) {
             return;
         }
         busy.set(true);
