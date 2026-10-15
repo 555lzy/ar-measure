@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.ar.core.Anchor;
-import com.google.ar.core.Config;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
@@ -26,7 +25,6 @@ import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.ViewRenderable;
-import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class ArMeasureActivity extends AppCompatActivity {
 
     private enum Unit { CENTIMETER, METER, FOOT, INCH }
 
-    private ArFragment arFragment;
+    private MeasureArFragment arFragment;
     private TextView hudText;
     private Unit unit = Unit.CENTIMETER;
 
@@ -67,32 +65,29 @@ public class ArMeasureActivity extends AppCompatActivity {
         btnUnit.setOnClickListener(v -> showUnitDialog());
 
         FragmentManager fm = getSupportFragmentManager();
-        arFragment = (ArFragment) fm.findFragmentById(R.id.ar_fragment);
+        arFragment = (MeasureArFragment) fm.findFragmentById(R.id.ar_fragment);
         if (arFragment == null) {
             finish();
             return;
         }
 
-        // 会话创建后:开启水平+垂直平面检测与聚焦模式,提高测距精度和适用面
-        arFragment.setOnSessionCreationListener(session -> {
-            Config config = new Config(session);
-            config.setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL);
-            config.setFocusMode(Config.FocusMode.AUTO);
-            session.configure(config);
-        });
-
-        // 点击平面 → 落点测量(与原版"对准平面后点一下"的交互一致)
+        // 点击平面 → 落点测量(与原版"对准平面后点一下"的交互一致)。
+        // 平面检测模式/聚焦模式见 MeasureArFragment.getSessionConfiguration
         arFragment.setOnTapArPlaneListener(this::onTapPlane);
     }
 
     private void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
-        if (busy.get() || hitResult == null || hitResult.getAnchor() == null) {
+        if (busy.get() || hitResult == null) {
+            return;
+        }
+        com.google.ar.core.Trackable trackable = hitResult.getTrackable();
+        if (trackable == null || !trackable.isTracking()) {
             return;
         }
         busy.set(true);
         try {
             Anchor anchor = hitResult.createAnchor();
-            Pose pose = anchor.getPose();
+            Pose pose = hitResult.getHitPose();
 
             // 1. AnchorNode:让测量点固定在物理世界中
             AnchorNode newAnchorNode = new AnchorNode(anchor);
@@ -236,10 +231,8 @@ public class ArMeasureActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (arFragment != null) {
-            arFragment.getArSceneView().getScene().removeChildren();
-            arFragment = null;
-        }
+        // Sceneform 1.17 渲染资源随 View 回收,这里只清引用
+        arFragment = null;
     }
 
     private static Color rgb(int r, int g, int b) {
